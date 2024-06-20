@@ -18,6 +18,11 @@ import { CollapsibleContentNode } from "./plugins/collapsible-plugin/collapsible
 import { CollapsibleTitleNode } from "./plugins/collapsible-plugin/collapsible-title-node";
 import { ImageNode } from "./nodes/images-node";
 import ImagesPlugin from "./plugins/images-plugin";
+import { HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { CodeHighlightNode, CodeNode } from "@lexical/code";
+import { ListItemNode, ListNode } from "@lexical/list";
+import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 
 function Placeholder() {
   return <div className="editor-placeholder">Enter some rich text...</div>;
@@ -49,6 +54,12 @@ const editorConfig = {
     CollapsibleContentNode,
     CollapsibleTitleNode,
     ImageNode,
+    HeadingNode,
+    QuoteNode,
+    CodeHighlightNode,
+    CodeNode,
+    ListItemNode,
+    ListNode,
   ],
   // Handling of errors during update
   onError(error: Error) {
@@ -61,9 +72,9 @@ const editorConfig = {
 export default function App() {
   return (
     <LexicalComposer initialConfig={editorConfig}>
-      <div className="editor-container">
+      <div className="max-w-4xl mx-auto rounded-md relative">
         <ToolbarPlugin />
-        <div className="editor-inner">
+        <div className="bg-white relative text-start">
           <RichTextPlugin
             contentEditable={<ContentEditable className="editor-input" />}
             placeholder={<Placeholder />}
@@ -78,6 +89,8 @@ export default function App() {
           <HorizontalRulePlugin />
           <CollapsiblePlugin />
           <ImagesPlugin />
+          <CheckListPlugin />
+          <ListPlugin />
           <HistoryPlugin />
           <AutoFocusPlugin />
           {/* <TreeViewPlugin /> */}

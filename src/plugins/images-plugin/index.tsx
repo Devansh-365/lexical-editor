@@ -166,35 +166,10 @@ export function InsertImageDialog({
     <>
       {!mode && (
         <DialogButtonsList>
-          {/* <Button
-            data-test-id="image-modal-option-sample"
-            onClick={() =>
-              onClick(
-                hasModifier.current
-                  ? {
-                      altText:
-                        "Daylight fir trees forest glacier green high ice landscape",
-                      src: landscapeImage,
-                    }
-                  : {
-                      altText: "Yellow flower in tilt shift lens",
-                      src: yellowFlowerImage,
-                    },
-              )
-            }
-          >
-            Sample
-          </Button> */}
-          <Button
-            data-test-id="image-modal-option-url"
-            onClick={() => setMode("url")}
-          >
+          <Button variant="secondary" onClick={() => setMode("url")}>
             URL
           </Button>
-          <Button
-            data-test-id="image-modal-option-file"
-            onClick={() => setMode("file")}
-          >
+          <Button variant="secondary" onClick={() => setMode("file")}>
             File
           </Button>
         </DialogButtonsList>
