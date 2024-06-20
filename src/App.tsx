@@ -69,33 +69,35 @@ const editorConfig = {
   theme: ExampleTheme,
 };
 
-export default function App() {
+export default function HomePage() {
   return (
-    <LexicalComposer initialConfig={editorConfig}>
-      <div className="max-w-4xl mx-auto rounded-md relative">
-        <ToolbarPlugin />
-        <div className="bg-white relative text-start">
-          <RichTextPlugin
-            contentEditable={<ContentEditable className="editor-input" />}
-            placeholder={<Placeholder />}
-            ErrorBoundary={LexicalErrorBoundary}
-          />
-          <MyOnChangePlugin
-            onChange={(editorState: any) => {
-              localStorage.setItem("editorState", editorState);
-              console.log(editorState);
-            }}
-          />
-          <HorizontalRulePlugin />
-          <CollapsiblePlugin />
-          <ImagesPlugin />
-          <CheckListPlugin />
-          <ListPlugin />
-          <HistoryPlugin />
-          <AutoFocusPlugin />
-          {/* <TreeViewPlugin /> */}
+    <>
+      <LexicalComposer initialConfig={editorConfig}>
+        <div className="max-w-4xl mx-auto rounded-md relative">
+          <ToolbarPlugin />
+          <div className="bg-white relative text-start min-h-96">
+            <RichTextPlugin
+              contentEditable={<ContentEditable className="editor-input" />}
+              placeholder={<Placeholder />}
+              ErrorBoundary={LexicalErrorBoundary}
+            />
+            <MyOnChangePlugin
+              onChange={(editorState: any) => {
+                localStorage.setItem("editorState", editorState);
+                console.log(editorState);
+              }}
+            />
+            <HorizontalRulePlugin />
+            <CollapsiblePlugin />
+            <ImagesPlugin />
+            <CheckListPlugin />
+            <ListPlugin />
+            <HistoryPlugin />
+            <AutoFocusPlugin />
+            {/* <TreeViewPlugin /> */}
+          </div>
         </div>
-      </div>
-    </LexicalComposer>
+      </LexicalComposer>
+    </>
   );
 }

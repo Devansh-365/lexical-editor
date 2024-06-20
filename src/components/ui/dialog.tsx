@@ -6,7 +6,7 @@ type Props = Readonly<{
 }>;
 
 export function DialogButtonsList({ children }: Props): JSX.Element {
-  return <div className="DialogButtonsList">{children}</div>;
+  return <div className="flex flex-col gap-2">{children}</div>;
 }
 
 export function DialogActions({
