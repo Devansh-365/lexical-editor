@@ -1,28 +1,52 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
-import {AutoFocusPlugin} from '@lexical/react/LexicalAutoFocusPlugin';
-import {LexicalComposer} from '@lexical/react/LexicalComposer';
-import {ContentEditable} from '@lexical/react/LexicalContentEditable';
-import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
-import {HistoryPlugin} from '@lexical/react/LexicalHistoryPlugin';
-import {RichTextPlugin} from '@lexical/react/LexicalRichTextPlugin';
-
-import ExampleTheme from './ExampleTheme';
-import ToolbarPlugin from './plugins/ToolbarPlugin';
-import TreeViewPlugin from './plugins/TreeViewPlugin';
+import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
+import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import { ContentEditable } from "@lexical/react/LexicalContentEditable";
+import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import ExampleTheme from "./ExampleTheme";
+import ToolbarPlugin from "./plugins/ToolbarPlugin";
+import { useEffect } from "react";
+import { $generateHtmlFromNodes } from "@lexical/html";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { EditorState } from "lexical";
+import { HorizontalRulePlugin } from "@lexical/react/LexicalHorizontalRulePlugin";
+import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
+import CollapsiblePlugin from "./plugins/collapsible-plugin";
+import { CollapsibleContainerNode } from "./plugins/collapsible-plugin/collapsible-contain-node";
+import { CollapsibleContentNode } from "./plugins/collapsible-plugin/collapsible-content-node";
+import { CollapsibleTitleNode } from "./plugins/collapsible-plugin/collapsible-title-node";
 
 function Placeholder() {
   return <div className="editor-placeholder">Enter some rich text...</div>;
 }
 
+function MyOnChangePlugin(props: {
+  onChange: (editorState: EditorState) => void;
+}) {
+  const { onChange } = props;
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    return editor.registerUpdateListener(({ editorState }) => {
+      editorState.read(() => {
+        const htmlString: any = $generateHtmlFromNodes(editor);
+        localStorage.setItem("editorContent", htmlString);
+        onChange(htmlString);
+      });
+    });
+  }, [onChange, editor]);
+  return null;
+}
+
 const editorConfig = {
-  namespace: 'React.js Demo',
-  nodes: [],
+  namespace: "React.js Demo",
+  nodes: [
+    HorizontalRuleNode,
+    CollapsibleContainerNode,
+    CollapsibleContentNode,
+    CollapsibleTitleNode,
+  ],
   // Handling of errors during update
   onError(error: Error) {
     throw error;
@@ -42,9 +66,17 @@ export default function App() {
             placeholder={<Placeholder />}
             ErrorBoundary={LexicalErrorBoundary}
           />
+          <MyOnChangePlugin
+            onChange={(editorState: any) => {
+              localStorage.setItem("editorState", editorState);
+              console.log(editorState);
+            }}
+          />
+          <HorizontalRulePlugin />
+          <CollapsiblePlugin />
           <HistoryPlugin />
           <AutoFocusPlugin />
-          <TreeViewPlugin />
+          {/* <TreeViewPlugin /> */}
         </div>
       </div>
     </LexicalComposer>
