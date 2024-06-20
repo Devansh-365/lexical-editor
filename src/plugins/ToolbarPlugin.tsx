@@ -38,6 +38,8 @@ import {
 import { Button } from "../components/ui/button";
 import { INSERT_HORIZONTAL_RULE_COMMAND } from "@lexical/react/LexicalHorizontalRuleNode";
 import { INSERT_COLLAPSIBLE_COMMAND } from "./collapsible-plugin";
+import { InsertImageDialog } from "./images-plugin";
+import useModal from "../hooks/useModal";
 
 const LowPriority = 1;
 
@@ -56,6 +58,7 @@ export default function ToolbarPlugin() {
   const [isUnderline, setIsUnderline] = useState(false);
   const [isStrikethrough, setIsStrikethrough] = useState(false);
   const [fontSize, setFontSize] = useState<string>("15px");
+  const [modal, showModal] = useModal();
 
   const $updateToolbar = useCallback(() => {
     const selection = $getSelection();
@@ -212,7 +215,16 @@ export default function ToolbarPlugin() {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
           <DropdownMenuGroup>
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                showModal("Insert Image", (onClose) => (
+                  <InsertImageDialog
+                    activeEditor={activeEditor}
+                    onClose={onClose}
+                  />
+                ));
+              }}
+            >
               <Image className="size-4 mr-2" />
               <span>Image</span>
             </DropdownMenuItem>
@@ -238,6 +250,7 @@ export default function ToolbarPlugin() {
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
+      {modal}
     </div>
   );
 }

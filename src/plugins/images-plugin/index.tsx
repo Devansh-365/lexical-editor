@@ -19,10 +19,14 @@ import {
   LexicalEditor,
 } from "lexical";
 import { useEffect, useRef, useState } from "react";
-import { CAN_USE_DOM } from "shared/canUseDOM";
 
-import landscapeImage from "../../images/landscape.jpg";
-import yellowFlowerImage from "../../images/yellow-flower.jpg";
+export const CAN_USE_DOM: boolean =
+  typeof window !== "undefined" &&
+  typeof window.document !== "undefined" &&
+  typeof window.document.createElement !== "undefined";
+
+// import landscapeImage from "../../images/landscape.jpg";
+// import yellowFlowerImage from "../../images/yellow-flower.jpg";
 import {
   $createImageNode,
   $isImageNode,
@@ -31,8 +35,8 @@ import {
 } from "../../nodes/images-node";
 import { Button } from "../../components/ui/button";
 import { DialogActions, DialogButtonsList } from "../../components/ui/dialog";
-import FileInput from "../../ui/FileInput";
-import TextInput from "../../ui/TextInput";
+import FileInput from "../../components/ui/file-input";
+import TextInput from "../../components/ui/input";
 
 export type InsertImagePayload = Readonly<ImagePayload>;
 
@@ -162,7 +166,7 @@ export function InsertImageDialog({
     <>
       {!mode && (
         <DialogButtonsList>
-          <Button
+          {/* <Button
             data-test-id="image-modal-option-sample"
             onClick={() =>
               onClick(
@@ -180,7 +184,7 @@ export function InsertImageDialog({
             }
           >
             Sample
-          </Button>
+          </Button> */}
           <Button
             data-test-id="image-modal-option-url"
             onClick={() => setMode("url")}

@@ -16,6 +16,8 @@ import CollapsiblePlugin from "./plugins/collapsible-plugin";
 import { CollapsibleContainerNode } from "./plugins/collapsible-plugin/collapsible-contain-node";
 import { CollapsibleContentNode } from "./plugins/collapsible-plugin/collapsible-content-node";
 import { CollapsibleTitleNode } from "./plugins/collapsible-plugin/collapsible-title-node";
+import { ImageNode } from "./nodes/images-node";
+import ImagesPlugin from "./plugins/images-plugin";
 
 function Placeholder() {
   return <div className="editor-placeholder">Enter some rich text...</div>;
@@ -46,6 +48,7 @@ const editorConfig = {
     CollapsibleContainerNode,
     CollapsibleContentNode,
     CollapsibleTitleNode,
+    ImageNode,
   ],
   // Handling of errors during update
   onError(error: Error) {
@@ -74,6 +77,7 @@ export default function App() {
           />
           <HorizontalRulePlugin />
           <CollapsiblePlugin />
+          <ImagesPlugin />
           <HistoryPlugin />
           <AutoFocusPlugin />
           {/* <TreeViewPlugin /> */}
