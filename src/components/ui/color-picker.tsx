@@ -4,7 +4,6 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "./dropdown";
-import { useImmer } from "use-immer";
 import ReactGPicker from "react-gcolor-picker";
 
 interface ColorPickerProps {
@@ -13,61 +12,15 @@ interface ColorPickerProps {
   buttonIconClassName?: string;
   buttonLabel?: string | JSX.Element;
   color?: string;
-  children?: JSX.Element;
-  onChange?: (color: string) => void;
+  onChange: (color: string) => void;
   title?: string;
   type: "bg" | "text";
 }
 
-const defaultColors: any = [
-  {
-    id: 1,
-    name: "color1",
-    default: "#18A2AD",
-    hex: null,
-    rgb: null,
-    active: true,
-  },
-  {
-    id: 2,
-    name: "color2",
-    default: "#FF3838",
-    hex: null,
-    rgb: null,
-    active: false,
-  },
-  {
-    id: 3,
-    name: "color3",
-    default: "#152532",
-    hex: null,
-    rgb: null,
-    active: false,
-  },
-  {
-    id: 4,
-    name: "color4",
-    default: "#2ECC71",
-    hex: null,
-    rgb: null,
-    active: false,
-  },
-  {
-    id: 5,
-    name: "color5",
-    default: "#e9dd41",
-    hex: null,
-    rgb: null,
-    active: false,
-  },
-];
-
 export default function ColorPickerDropdown({
   color,
-  children,
   onChange,
   type,
-  ...rest
 }: Readonly<ColorPickerProps>): JSX.Element {
   return (
     <DropdownMenu>
