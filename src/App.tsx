@@ -7,22 +7,15 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import ExampleTheme from "./ExampleTheme";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import { useEffect } from "react";
-import { $generateHtmlFromNodes } from "@lexical/html";
+import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { EditorState } from "lexical";
 import { HorizontalRulePlugin } from "@lexical/react/LexicalHorizontalRulePlugin";
-import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 import CollapsiblePlugin from "./plugins/collapsible-plugin";
-import { CollapsibleContainerNode } from "./plugins/collapsible-plugin/collapsible-contain-node";
-import { CollapsibleContentNode } from "./plugins/collapsible-plugin/collapsible-content-node";
-import { CollapsibleTitleNode } from "./plugins/collapsible-plugin/collapsible-title-node";
-import { ImageNode } from "./nodes/images-node";
 import ImagesPlugin from "./plugins/images-plugin";
-import { HeadingNode, QuoteNode } from "@lexical/rich-text";
-import { CodeHighlightNode, CodeNode } from "@lexical/code";
-import { ListItemNode, ListNode } from "@lexical/list";
 import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import Nodes from "./nodes";
 
 function Placeholder() {
   return <div className="editor-placeholder">Enter some rich text...</div>;
@@ -40,27 +33,48 @@ function MyOnChangePlugin(props: {
         const htmlString: any = $generateHtmlFromNodes(editor);
         localStorage.setItem("editorContent", htmlString);
         onChange(htmlString);
+
+        // Get JSON representation of the editor state and log it
+        const jsonState = editorState.toJSON();
+        localStorage.setItem("editorState", JSON.stringify(jsonState));
+        console.log("Editor State in JSON format:", jsonState);
       });
     });
   }, [onChange, editor]);
   return null;
 }
 
+function LoadInitialContentPlugin() {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    const storedEditorState = localStorage.getItem("editorState");
+    if (storedEditorState) {
+      const jsonEditorState = JSON.parse(storedEditorState);
+      editor.update(() => {
+        const editorState = editor.parseEditorState(jsonEditorState);
+        editor.setEditorState(editorState);
+      });
+    } else {
+      const storedContent = localStorage.getItem("editorContent");
+      if (storedContent) {
+        editor.update(() => {
+          const parser = new DOMParser();
+          const dom = parser.parseFromString(storedContent, "text/html");
+          const nodes: any = $generateNodesFromDOM(editor, dom);
+          const root = editor.getRootElement();
+          root?.append(nodes);
+        });
+      }
+    }
+  }, [editor]);
+
+  return null;
+}
+
 const editorConfig = {
-  namespace: "React.js Demo",
-  nodes: [
-    HorizontalRuleNode,
-    CollapsibleContainerNode,
-    CollapsibleContentNode,
-    CollapsibleTitleNode,
-    ImageNode,
-    HeadingNode,
-    QuoteNode,
-    CodeHighlightNode,
-    CodeNode,
-    ListItemNode,
-    ListNode,
-  ],
+  namespace: "Helium Editor",
+  nodes: [...Nodes],
   // Handling of errors during update
   onError(error: Error) {
     throw error;
@@ -87,6 +101,7 @@ export default function HomePage() {
                 console.log(editorState);
               }}
             />
+            <LoadInitialContentPlugin />
             <HorizontalRulePlugin />
             <CollapsiblePlugin />
             <ImagesPlugin />
