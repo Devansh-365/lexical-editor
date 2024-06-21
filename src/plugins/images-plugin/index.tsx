@@ -37,6 +37,7 @@ import { Button } from "../../components/ui/button";
 import { DialogActions, DialogButtonsList } from "../../components/ui/dialog";
 import FileInput from "../../components/ui/file-input";
 import TextInput from "../../components/ui/input";
+import ImageUploadComponent from "../../components/cloudinary-upload";
 
 export type InsertImagePayload = Readonly<ImagePayload>;
 
@@ -108,14 +109,22 @@ export function InsertImageUploadedDialogBody({
     }
   };
 
+  const handleUpload = (url: string) => {
+    console.log("CDN: ", url);
+    setSrc(url);
+  };
+
   return (
     <>
-      <FileInput
+      {/* Cloudinary Upload */}
+      <ImageUploadComponent onUpload={handleUpload} />
+      {/* File Upload */}
+      {/* <FileInput
         label="Image Upload"
         onChange={loadImage}
         accept="image/*"
         data-test-id="image-modal-file-upload"
-      />
+      /> */}
       <TextInput
         label="Alt Text"
         placeholder="Descriptive alternative text"
@@ -157,6 +166,7 @@ export function InsertImageDialog({
     };
   }, [activeEditor]);
 
+  // CDN like cludinary can be implement here for file uploads
   const onClick = (payload: InsertImagePayload) => {
     activeEditor.dispatchCommand(INSERT_IMAGE_COMMAND, payload);
     onClose();
@@ -204,29 +214,29 @@ export default function ImagesPlugin({
 
           return true;
         },
-        COMMAND_PRIORITY_EDITOR,
+        COMMAND_PRIORITY_EDITOR
       ),
       editor.registerCommand<DragEvent>(
         DRAGSTART_COMMAND,
         (event) => {
           return $onDragStart(event);
         },
-        COMMAND_PRIORITY_HIGH,
+        COMMAND_PRIORITY_HIGH
       ),
       editor.registerCommand<DragEvent>(
         DRAGOVER_COMMAND,
         (event) => {
           return $onDragover(event);
         },
-        COMMAND_PRIORITY_LOW,
+        COMMAND_PRIORITY_LOW
       ),
       editor.registerCommand<DragEvent>(
         DROP_COMMAND,
         (event) => {
           return $onDrop(event, editor);
         },
-        COMMAND_PRIORITY_HIGH,
-      ),
+        COMMAND_PRIORITY_HIGH
+      )
     );
   }, [captionsEnabled, editor]);
 
@@ -263,7 +273,7 @@ function $onDragStart(event: DragEvent): boolean {
         width: node.__width,
       },
       type: "image",
-    }),
+    })
   );
 
   return true;
@@ -351,8 +361,8 @@ function getDragSelection(event: DragEvent): Range | null | undefined {
     target == null
       ? null
       : target.nodeType === 9
-        ? (target as Document).defaultView
-        : (target as Element).ownerDocument.defaultView;
+      ? (target as Document).defaultView
+      : (target as Element).ownerDocument.defaultView;
   const domSelection = getDOMSelection(targetWindow);
   if (document.caretRangeFromPoint) {
     range = document.caretRangeFromPoint(event.clientX, event.clientY);
